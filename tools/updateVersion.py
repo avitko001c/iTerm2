@@ -1,6 +1,9 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 
-import commands
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+import subprocess
 import os
 import sys
 import time
@@ -13,7 +16,7 @@ from Foundation import NSMutableDictionary
 
 if os.environ["CONFIGURATION"] == "Development":
         cmd = "git log -1 --format=\"%H\""
-        status, output = commands.getstatusoutput(cmd)
+        status, output = subprocess.getstatusoutput(cmd)
         if status != 0:
                 sys.exit(status)
 
@@ -33,7 +36,7 @@ infoFile = os.environ["INFOPLIST_PATH"]
 path = os.path.join(buildDir, infoFile)
 plist = NSMutableDictionary.dictionaryWithContentsOfFile_(path)
 version = open("version.txt").read().strip() % {"extra": revision}
-print "Updating versions:", infoFile, version
+print("Updating versions:", infoFile, version)
 plist["CFBundleShortVersionString"] = version
 plist["CFBundleGetInfoString"] = version
 plist["CFBundleVersion"] = version

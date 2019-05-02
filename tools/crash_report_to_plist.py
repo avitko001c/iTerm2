@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from builtins import input
+from past.utils import old_div
 # Convert a UKCrashReport into a usable plist file.
 # Uses the rather spiffy Python Lex-Yacc tool available here:
 # http://www.dabeaz.com/ply/
@@ -55,7 +59,7 @@ names = { }
 def p_plist(t):
     'plist : block_value'
     t[0] = t[1]
-    print t[0]
+    print(t[0])
 
 def p_dict_value(t):
     '''dict_value : dict_value key EQUALS value SEMI
@@ -126,7 +130,7 @@ def RejiggerDate(d):
   st = time.strptime(nozonedate, "%Y-%m-%d %H:%M:%S")
   dt = datetime.datetime(*st[:6])
   i = int(tz)
-  hdiff = i / 100
+  hdiff = old_div(i, 100)
   mdiff = abs(i) % 100
   if i < 0:
      mdiff *= -1
@@ -151,7 +155,7 @@ def p_block_value(t):
     t[0] = "<dict>\n%s</dict>" % t[2]
 
 def p_error(t):
-    print("Syntax error at ", t)
+    print(("Syntax error at ", t))
 
 import ply.yacc as yacc
 yacc.yacc()
@@ -159,7 +163,7 @@ yacc.yacc()
 s = None
 while 1:
     try:
-        line = raw_input()
+        line = input()
         if s is None:
           line.strip()
           if line == "Preferences:":
@@ -168,9 +172,9 @@ while 1:
           s += line
     except EOFError:
         break
-print '''<?xml version="1.0" encoding="UTF-8"?>
+print('''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">'''
+<plist version="1.0">''')
 
 yacc.parse(s)
-print "</plist>"
+print("</plist>")
